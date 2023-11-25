@@ -24,9 +24,53 @@ class JsonlParser implements \Countable
             $this->push($item);
         }
     }
+
+    /**
+     * This method returns the last item from the file and removes it.
+     */
     public function pop(): ?array
     {
-        return null;
+        /***
+         * Rewind to the end of the file and try to find the last newline
+         *
+         * @see https://www.php.net/manual/en/function.fseek.php
+         */
+        fseek($this->stream, 0, SEEK_END);
+
+        // this stream is now empty
+        if (ftell($this->stream) === 0) {
+            return null;
+        }
+
+        // start reading from the end of the stream in reverse order, byte by byte
+        fseek($this->stream, -1, SEEK_END);
+        $buffer = fread($this->stream, 1);
+
+        while(ftell($this->stream) > 0) {
+            // move two bytes back (one already read and the one before it)
+            fseek($this->stream, -2, SEEK_CUR);
+
+            $char = fread($this->stream, 1);
+            $buffer .= $char;
+
+            if ($char === self::LINES_SEPARATOR) {
+                break;
+            }
+
+            if (ftell($this->stream) === 0) {
+                break;
+            }
+        }
+
+        $buffer = strrev($buffer);
+        
+//        var_dump(__METHOD__, $buffer);
+
+        // truncate the stream and remove the trailing newline
+        $pos = ftell($this->stream);
+        ftruncate($this->stream, $pos < 1 ? 0 : $pos-1);
+
+        return json_decode($buffer, associative: true);
     }
 
     /**
