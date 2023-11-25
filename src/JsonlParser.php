@@ -17,13 +17,37 @@ class JsonlParser implements \Countable
     {
 
     }
+
+    public function pushItems(\Iterator $items): void
+    {
+        foreach($items as $item) {
+            $this->push($item);
+        }
+    }
     public function pop(): ?array
     {
         return null;
     }
 
+    /**
+     * This method returns how many JSON-encoded lines are in the stream.
+     *
+     * This can be heavy on large files this method rewinds and then reads the entire stream content.
+     *
+     * @return int
+     */
     public function count(): int
     {
-        return 0;
+        $count = 0;
+        fseek($this->stream, 0);
+
+        /**
+         * https://www.php.net/manual/en/function.stream-get-line.php
+         */
+        while(($_line = stream_get_line($this->stream, 1024 * 1024, self::LINES_SEPARATOR)) !== false) {
+            $count++;
+        }
+
+        return $count;
     }
 }
