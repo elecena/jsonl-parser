@@ -47,7 +47,7 @@ class JsonlParser implements \Countable
         fseek($this->stream, -1, SEEK_END);
         $buffer = fread($this->stream, 1);
 
-        while(ftell($this->stream) > 0) {
+        while(ftell($this->stream) > 1) {
             // move two bytes back (one already read and the one before it)
             fseek($this->stream, -2, SEEK_CUR);
 
