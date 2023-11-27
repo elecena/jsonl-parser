@@ -4,6 +4,10 @@ use \Elecena\JsonlParser\JsonlParser;
 
 class JsonParserTest extends BaseTestCase
 {
+	const ITEM = ['foo' => 'bar', 'ok' => true];
+	const ITEM_ONE = ['foo' => 'bar', 'ok' => true];
+	const ITEM_TWO = ['foo' => 'test', 'ok' => true];
+
     public function testOpensAnEmptyString(): void
     {
         $stream = self::streamFromString('');
@@ -14,49 +18,39 @@ class JsonParserTest extends BaseTestCase
 
     public function testOpensASingleLine(): void
     {
-        $item = ['foo' => 'bar', 'ok' => true];
-        
-        $stream = self::streamFromString(json_encode($item));
+        $stream = self::streamFromString(json_encode(self::ITEM));
         $parser = new JsonlParser($stream);
         $this->assertCount(1, $parser);
-        $this->assertSame($item, $parser->pop());
+        $this->assertSame(self::ITEM, $parser->pop());
         $this->assertCount(0, $parser);
     }
     public function testOpensASingleLineWithTrailingNewLine(): void
     {
-        $item = ['foo' => 'bar', 'ok' => true];
-
-        $stream = self::streamFromString(json_encode($item) . JsonlParser::LINES_SEPARATOR);
+        $stream = self::streamFromString(json_encode(self::ITEM) . JsonlParser::LINES_SEPARATOR);
         $parser = new JsonlParser($stream);
         $this->assertCount(1, $parser);
-        $this->assertSame($item, $parser->pop());
+        $this->assertSame(self::ITEM, $parser->pop());
         $this->assertCount(0, $parser);
     }
     public function testOpensTwoLines(): void
     {
-        $itemA = ['foo' => 'bar', 'ok' => true];
-        $itemB = ['foo' => 'test', 'ok' => true];
-
-        $stream = self::streamFromString(json_encode($itemA) . JsonlParser::LINES_SEPARATOR . json_encode($itemB));
+        $stream = self::streamFromString(json_encode(self::ITEM_ONE) . JsonlParser::LINES_SEPARATOR . json_encode(self::ITEM_TWO));
         $parser = new JsonlParser($stream);
         $this->assertCount(2, $parser);
-        $this->assertSame($itemB, $parser->pop());
+        $this->assertSame(self::ITEM_TWO, $parser->pop());
         $this->assertCount(1, $parser);
-        $this->assertSame($itemA, $parser->pop());
+        $this->assertSame(self::ITEM_ONE, $parser->pop());
         $this->assertCount(0, $parser);
     }
 
-
     public function testOpensAnEmptyStringAndAddsAnItem(): void
     {
-        $item = ['foo' => 'bar', 'ok' => true];
-
         $stream = self::streamFromString('');
         $parser = new JsonlParser($stream);
         $this->assertCount(0, $parser);
-        $parser->push($item);
+        $parser->push(self::ITEM);
         $this->assertCount(1, $parser);
-        $this->assertSame($item, $parser->pop());
+        $this->assertSame(self::ITEM, $parser->pop());
         $this->assertCount(0, $parser);
     }
 
@@ -73,4 +67,20 @@ class JsonParserTest extends BaseTestCase
         $this->assertCount(0, $parser);
         $this->assertNull($parser->pop());
     }
+
+	public function testIterator(): void {
+		$stream = self::streamFromString('');
+		$parser = new JsonlParser($stream);
+
+		$parser->push('one');
+		$parser->push('two');
+		$parser->push('three');
+		$this->assertCount(3, $parser);
+
+		$list = iterator_to_array($parser->iterate());
+
+		$this->assertCount(0, $parser);
+		$this->assertCount(3, $list);
+		$this->assertSame(['three', 'two', 'one'], $list);
+	}
 }
