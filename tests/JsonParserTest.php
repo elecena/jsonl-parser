@@ -4,9 +4,9 @@ use \Elecena\JsonlParser\JsonlParser;
 
 class JsonParserTest extends BaseTestCase
 {
-	const ITEM = ['foo' => 'bar', 'ok' => true];
-	const ITEM_ONE = ['foo' => 'bar', 'ok' => true];
-	const ITEM_TWO = ['foo' => 'test', 'ok' => true];
+    const ITEM = ['foo' => 'bar', 'ok' => true];
+    const ITEM_ONE = ['foo' => 'bar', 'ok' => true];
+    const ITEM_TWO = ['foo' => 'test', 'ok' => true];
 
     public function testOpensAnEmptyString(): void
     {
@@ -68,19 +68,20 @@ class JsonParserTest extends BaseTestCase
         $this->assertNull($parser->pop());
     }
 
-	public function testIterator(): void {
-		$stream = self::streamFromString('');
-		$parser = new JsonlParser($stream);
+    public function testIterator(): void
+    {
+        $stream = self::streamFromString('');
+        $parser = new JsonlParser($stream);
 
-		$parser->push('one');
-		$parser->push('two');
-		$parser->push('three');
-		$this->assertCount(3, $parser);
+        $parser->push('one');
+        $parser->push('two');
+        $parser->push('three');
+        $this->assertCount(3, $parser);
 
-		$list = iterator_to_array($parser->iterate());
+        $list = iterator_to_array($parser->iterate());
 
-		$this->assertCount(0, $parser);
-		$this->assertCount(3, $list);
-		$this->assertSame(['three', 'two', 'one'], $list);
-	}
+        $this->assertCount(0, $parser);
+        $this->assertCount(3, $list);
+        $this->assertSame(['three', 'two', 'one'], $list);
+    }
 }

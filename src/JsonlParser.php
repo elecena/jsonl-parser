@@ -72,14 +72,15 @@ class JsonlParser implements \Countable
         return json_decode($buffer, associative: true);
     }
 
-	/**
-	 * @return \Generator<array,string>
-	 */
-	public function iterate(): \Generator {
-		while(!is_null($item=$this->pop())) {
-			yield $item;
-		}
-	}
+    /**
+     * @return \Generator<array,string>
+     */
+    public function iterate(): \Generator
+    {
+        while(!is_null($item=$this->pop())) {
+            yield $item;
+        }
+    }
 
     /**
      * This method returns how many JSON-encoded lines are in the stream.
