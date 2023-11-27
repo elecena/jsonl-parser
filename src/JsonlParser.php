@@ -82,7 +82,7 @@ class JsonlParser implements \Countable
     public function count(): int
     {
         $count = 0;
-        fseek($this->stream, 0);
+        rewind($this->stream);
 
         /**
          * https://www.php.net/manual/en/function.stream-get-line.php
