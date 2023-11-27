@@ -13,7 +13,7 @@ class JsonlParser implements \Countable
     {
     }
 
-    public function push(array $item): void
+    public function push(array|string $item): void
     {
         $encoded = json_encode($item);
         fwrite($this->stream, $encoded . self::LINES_SEPARATOR);
@@ -29,7 +29,7 @@ class JsonlParser implements \Countable
     /**
      * This method returns the last item from the file and removes it.
      */
-    public function pop(): ?array
+    public function pop(): null|array|string
     {
         /***
          * Rewind to the end of the file and try to find the last newline

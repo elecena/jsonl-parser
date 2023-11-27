@@ -59,4 +59,18 @@ class JsonParserTest extends BaseTestCase
         $this->assertSame($item, $parser->pop());
         $this->assertCount(0, $parser);
     }
+
+    public function testHandlesStrings(): void
+    {
+        $item = 'https://foo.bar.net';
+
+        $stream = self::streamFromString('');
+        $parser = new JsonlParser($stream);
+        $this->assertCount(0, $parser);
+        $parser->push($item);
+        $this->assertCount(1, $parser);
+        $this->assertSame($item, $parser->pop());
+        $this->assertCount(0, $parser);
+        $this->assertNull($parser->pop());
+    }
 }
