@@ -63,8 +63,6 @@ class JsonlParser implements \Countable
         }
 
         $buffer = strrev($buffer);
-        
-//        var_dump(__METHOD__, $buffer);
 
         // truncate the stream and remove the trailing newline
         $pos = ftell($this->stream);
@@ -88,7 +86,7 @@ class JsonlParser implements \Countable
         /**
          * https://www.php.net/manual/en/function.stream-get-line.php
          */
-        while(($_line = stream_get_line($this->stream, 1024 * 1024, self::LINES_SEPARATOR)) !== false) {
+        while(stream_get_line($this->stream, 1024 * 1024, self::LINES_SEPARATOR) !== false) {
             $count++;
         }
 
