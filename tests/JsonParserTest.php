@@ -84,4 +84,26 @@ class JsonParserTest extends BaseTestCase
         $this->assertCount(3, $list);
         $this->assertSame(['three', 'two', 'one'], $list);
     }
+
+    public function testPushItems(): void
+    {
+        $stream = self::streamFromString('');
+        $parser = new JsonlParser($stream);
+
+        function iterator(): Generator
+        {
+            yield 'one';
+            yield 'two';
+            yield 'three';
+        }
+
+        $parser->pushItems(items:iterator());
+        $this->assertCount(3, $parser);
+
+        $list = iterator_to_array($parser->iterate());
+
+        $this->assertCount(0, $parser);
+        $this->assertCount(3, $list);
+        $this->assertSame(['three', 'two', 'one'], $list);
+    }
 }
