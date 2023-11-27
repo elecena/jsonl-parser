@@ -17,4 +17,15 @@ abstract class BaseTestCase extends TestCase
 
         return $stream;
     }
+
+    /**
+     * @return Generator<string>
+     */
+    protected static function iterator(): Generator
+    {
+        yield 'one';
+        yield 'two';
+        yield 'three';
+    }
+
 }

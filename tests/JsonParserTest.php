@@ -90,14 +90,7 @@ class JsonParserTest extends BaseTestCase
         $stream = self::streamFromString('');
         $parser = new JsonlParser($stream);
 
-        function iterator(): Generator
-        {
-            yield 'one';
-            yield 'two';
-            yield 'three';
-        }
-
-        $parser->pushItems(items:iterator());
+        $parser->pushItems(items:self::iterator());
         $this->assertCount(3, $parser);
 
         $list = iterator_to_array($parser->iterate());
@@ -105,5 +98,32 @@ class JsonParserTest extends BaseTestCase
         $this->assertCount(0, $parser);
         $this->assertCount(3, $list);
         $this->assertSame(['three', 'two', 'one'], $list);
+    }
+
+    public function testOpensAnEmptyFile(): void
+    {
+        $stream = tmpfile();
+        $parser = new JsonlParser($stream);
+        $this->assertNull($parser->pop());
+        $this->assertCount(0, $parser);
+
+        fclose($stream); // this removes the file
+    }
+    public function testPushItemsToFile(): void
+    {
+        $stream = tmpfile();
+        $parser = new JsonlParser($stream);
+        $this->assertCount(0, $parser);
+
+        $parser->pushItems(items:self::iterator());
+        $this->assertCount(3, $parser);
+
+        $list = iterator_to_array($parser->iterate());
+
+        $this->assertCount(0, $parser);
+        $this->assertCount(3, $list);
+        $this->assertSame(['three', 'two', 'one'], $list);
+
+        fclose($stream); // this removes the file
     }
 }
