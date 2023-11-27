@@ -15,7 +15,8 @@ class JsonlParser implements \Countable
 
     public function push(array $item): void
     {
-
+        $encoded = json_encode($item);
+        fwrite($this->stream, $encoded . self::LINES_SEPARATOR);
     }
 
     public function pushItems(\Iterator $items): void
