@@ -126,4 +126,43 @@ class JsonParserTest extends BaseTestCase
 
         fclose($stream); // this removes the file
     }
+
+    public function testFileSyncing(): void
+    {
+        $tmpFilename = tempnam(directory: sys_get_temp_dir(), prefix: 'jsonld');
+        $stream = fopen($tmpFilename, 'a+t');
+
+        // TODO: introduce a helper JsonlParser::fromFile()
+        $parser = new JsonlParser($stream);
+        $this->assertCount(0, $parser);
+        $parser->push(self::ITEM_ONE);
+        $parser->push(self::ITEM_TWO);
+        $this->assertCount(2, $parser);
+
+        // now get one and push the next item
+        $this->assertSame(self::ITEM_TWO, $parser->pop());
+        $this->assertStringEqualsFile(
+            expectedFile: $tmpFilename,
+            actualString: json_encode(self::ITEM_ONE) . JsonlParser::LINES_SEPARATOR
+        );
+        $this->assertCount(1, $parser);
+        $parser->push(self::ITEM);
+        $this->assertStringEqualsFile(
+            expectedFile: $tmpFilename,
+            actualString: json_encode(self::ITEM_ONE) . JsonlParser::LINES_SEPARATOR . json_encode(self::ITEM) . JsonlParser::LINES_SEPARATOR
+        );
+        $this->assertCount(2, $parser);
+
+        // now, empty the file
+        $parser->pop();
+        $parser->pop();
+        $this->assertCount(0, $parser);
+        $this->assertStringEqualsFile(
+            expectedFile: $tmpFilename,
+            actualString: ''
+        );
+
+        fclose($stream);
+        unlink($tmpFilename);
+    }
 }

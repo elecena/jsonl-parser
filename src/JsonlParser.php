@@ -65,9 +65,10 @@ class JsonlParser implements \Countable
 
         $buffer = strrev($buffer);
 
-        // truncate the stream and remove the trailing newline
+        // truncate the stream
+        // remove the trailing newline if the stream is now empty
         $pos = ftell($this->stream);
-        ftruncate($this->stream, $pos < 1 ? 0 : $pos-1);
+        ftruncate($this->stream, $pos <= strlen(self::LINES_SEPARATOR) ? 0 : $pos);
 
         return json_decode($buffer, associative: true);
     }
