@@ -127,13 +127,11 @@ class JsonParserTest extends BaseTestCase
         fclose($stream); // this removes the file
     }
 
-    public function testFileSyncing(): void
+    public function testFromFile(): void
     {
         $tmpFilename = tempnam(directory: sys_get_temp_dir(), prefix: 'jsonld');
-        $stream = fopen($tmpFilename, 'a+t');
 
-        // TODO: introduce a helper JsonlParser::fromFile()
-        $parser = new JsonlParser($stream);
+        $parser = JsonlParser::fromFile($tmpFilename);
         $this->assertCount(0, $parser);
         $this->assertTrue($parser->empty());
 
@@ -166,7 +164,6 @@ class JsonParserTest extends BaseTestCase
             actualString: ''
         );
 
-        fclose($stream);
         unlink($tmpFilename);
     }
 }

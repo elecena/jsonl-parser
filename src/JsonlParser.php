@@ -13,6 +13,15 @@ class JsonlParser implements \Countable
     {
     }
 
+    /**
+     * Initialize the parser from the given file.
+     */
+    public static function fromFile(string $filename, string $mode = 'a+t'): self
+    {
+        $stream = fopen($filename, $mode);
+        return new self($stream);
+    }
+
     public function push(array|string $item): void
     {
         $encoded = json_encode($item);
