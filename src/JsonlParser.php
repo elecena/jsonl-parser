@@ -104,4 +104,12 @@ class JsonlParser implements \Countable
 
         return $count;
     }
+
+    /**
+     * Checks if there are no items in the stream.
+     */
+    public function empty(): bool
+    {
+        return count($this) === 0;
+    }
 }

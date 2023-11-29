@@ -135,9 +135,12 @@ class JsonParserTest extends BaseTestCase
         // TODO: introduce a helper JsonlParser::fromFile()
         $parser = new JsonlParser($stream);
         $this->assertCount(0, $parser);
+        $this->assertTrue($parser->empty());
+
         $parser->push(self::ITEM_ONE);
         $parser->push(self::ITEM_TWO);
         $this->assertCount(2, $parser);
+        $this->assertFalse($parser->empty());
 
         // now get one and push the next item
         $this->assertSame(self::ITEM_TWO, $parser->pop());
@@ -157,6 +160,7 @@ class JsonParserTest extends BaseTestCase
         $parser->pop();
         $parser->pop();
         $this->assertCount(0, $parser);
+        $this->assertTrue($parser->empty());
         $this->assertStringEqualsFile(
             expectedFile: $tmpFilename,
             actualString: ''
