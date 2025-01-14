@@ -30,7 +30,7 @@ class JsonlParser implements \Countable
 
     public function pushItems(\Iterator $items): void
     {
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $this->push($item);
         }
     }
@@ -56,7 +56,7 @@ class JsonlParser implements \Countable
         fseek($this->stream, -1, SEEK_END);
         $buffer = fread($this->stream, 1);
 
-        while(ftell($this->stream) > 1) {
+        while (ftell($this->stream) > 1) {
             // move two bytes back (one already read and the one before it)
             fseek($this->stream, -2, SEEK_CUR);
 
@@ -87,7 +87,7 @@ class JsonlParser implements \Countable
      */
     public function iterate(): \Generator
     {
-        while(!is_null($item=$this->pop())) {
+        while (!is_null($item=$this->pop())) {
             yield $item;
         }
     }
@@ -107,7 +107,7 @@ class JsonlParser implements \Countable
         /**
          * https://www.php.net/manual/en/function.stream-get-line.php
          */
-        while(stream_get_line($this->stream, 1024 * 1024, self::LINES_SEPARATOR) !== false) {
+        while (stream_get_line($this->stream, 1024 * 1024, self::LINES_SEPARATOR) !== false) {
             $count++;
         }
 
