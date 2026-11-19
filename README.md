@@ -1,4 +1,6 @@
 # jsonl-parser
+[![Test](https://github.com/elecena/jsonl-parser/actions/workflows/php.yml/badge.svg)](https://github.com/elecena/jsonl-parser/actions/workflows/php.yml)
+
 Add, read and remove entries from [JSON Lines](https://jsonlines.org/) formatted files. For easier handling of large files the stack approach is used - use `push` & `pop` method (add a line to end of the file, take from the end).
 
 ## Inspired by
